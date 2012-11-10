@@ -1,5 +1,7 @@
 package bma.groomservice.data.dataprovence;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,8 +17,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import android.os.AsyncTask;
+import android.os.Environment;
 import bma.groomservice.data.Poi;
 import bma.groomservice.data.PoiListener;
+
+import com.google.gson.Gson;
 
 public class DataprovenceManager implements PoiListener {
 
@@ -54,11 +59,15 @@ public class DataprovenceManager implements PoiListener {
 				"MonumentsEtStesCulturels" });
 	}
 
-	private final TreeSet<Poi> pois = new TreeSet<Poi>();
+	private TreeSet<Poi> pois;
 
 	private final PoiListener listener;
 
 	private int count = 0;
+
+	// false -> lit les données en local (fichiers *.json)
+	// true -> lit les données depuis le net
+	public static final boolean online = false;
 
 	private class LoadDataTask extends
 			AsyncTask<DataprovenceHelper, Integer, Long> {
@@ -101,7 +110,12 @@ public class DataprovenceManager implements PoiListener {
 		for (String tag : tags) {
 			String[] datasets = DATASETS.get(tag);
 			for (int d = 0; d < datasets.length; d++) {
-				helpers.add(new DataprovenceHelper(datasets[d]));
+				if (online) {
+					helpers.add(new DataprovenceHelper(datasets[d]));
+				} else {
+					helpers.add(new DataprovenceFileHelper(datasets[d]
+							+ ".json"));
+				}
 			}
 		}
 		return helpers;
@@ -122,6 +136,11 @@ public class DataprovenceManager implements PoiListener {
 
 	public void findAll(Collection<String> tags) throws IOException {
 
+		synchronized (this) {
+			count = 0;
+			pois = new TreeSet<Poi>();
+		}
+
 		Set<DataprovenceHelper> helpers = new HashSet<DataprovenceHelper>();
 		helpers.addAll(findHelpers(tags));
 
@@ -136,5 +155,39 @@ public class DataprovenceManager implements PoiListener {
 
 	public void findAll(String[] tags) throws IOException {
 		findAll(Arrays.asList(tags));
+	}
+
+	/** Sauvegarde la lise de POIs donnés */
+	public void save(String filename, List<Poi> pois) throws IOException {
+		// boolean mExternalStorageAvailable = false;
+		// boolean mExternalStorageWriteable = false;
+		// String state = Environment.getExternalStorageState();
+		//
+		// if (Environment.MEDIA_MOUNTED.equals(state)) {
+		// // We can read and write the media
+		// mExternalStorageAvailable = mExternalStorageWriteable = true;
+		// } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+		// // We can only read the media
+		// mExternalStorageAvailable = true;
+		// mExternalStorageWriteable = false;
+		// } else {
+		// // Something else is wrong. It may be one of many other states, but
+		// all we need
+		// // to know is we can neither read nor write
+		// mExternalStorageAvailable = mExternalStorageWriteable = false;
+		// }
+
+		Gson gson = new Gson();
+		String out = gson.toJson(pois);
+
+		File dir = Environment.getExternalStorageDirectory();
+		FileOutputStream fos = new FileOutputStream(new File(dir, filename));
+		fos.write(out.getBytes());
+		fos.close();
+	}
+
+	/** Sauvegarde l'état courant */
+	public void save(String filename) throws IOException {
+		save(filename, new ArrayList<Poi>(pois));
 	}
 }
