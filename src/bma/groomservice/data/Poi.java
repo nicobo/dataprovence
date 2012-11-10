@@ -38,6 +38,8 @@ public class Poi implements Parcelable, Comparable<Poi> {
 	/** Ex: "RD7" */
 	public String voie;
 
+	public String theme;
+
 	public Poi() {
 		super();
 	}
@@ -63,6 +65,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 		type = p.readString();
 		ville = p.readString();
 		voie = p.readString();
+		theme = p.readString();
 	}
 
 	public static final Parcelable.Creator<Poi> CREATOR = new Parcelable.Creator<Poi>() {
@@ -98,6 +101,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 		p.writeString(type);
 		p.writeString(ville);
 		p.writeString(voie);
+		p.writeString(theme);
 	}
 
 	@Override

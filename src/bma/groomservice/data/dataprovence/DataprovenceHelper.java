@@ -3,6 +3,7 @@ package bma.groomservice.data.dataprovence;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
@@ -17,6 +18,7 @@ import bma.groomservice.data.Poi;
 import bma.groomservice.data.PoiList;
 
 import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 
 public class DataprovenceHelper {
 
@@ -99,11 +101,12 @@ public class DataprovenceHelper {
 	 */
 	protected PoiList getContent(InputStream is) throws IOException {
 
-		String json = readStream(is);
+		// String json = readStream(is);
 		// logger.debug("json={}", json);
 		Gson gson = new Gson();
 
-		PoiList all = gson.fromJson(json, PoiList.class);
+		PoiList all = gson.fromJson(new JsonReader(new InputStreamReader(is,
+				"UTF-8")), PoiList.class);
 		return all;
 	}
 
