@@ -40,4 +40,9 @@ public class DataprovenceFileHelper extends DataprovenceHelper {
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "DataprovenceFileHelper [filename=" + filename + "]";
+	}
 }

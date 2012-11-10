@@ -28,6 +28,8 @@ public class DataprovenceHelper {
 
 	public DataprovenceHelper(String rootUrl, String datasetName,
 			Collection<Filter> filters) {
+		logger.debug("new DataprovenceHelper({},{},{})", new Object[] {
+				rootUrl, datasetName, filters });
 		this.rootUrl = rootUrl;
 		this.datasetName = datasetName;
 		this.filters = filters;
@@ -98,7 +100,7 @@ public class DataprovenceHelper {
 	protected PoiList getContent(InputStream is) throws IOException {
 
 		String json = readStream(is);
-		logger.debug("json={}", json);
+		// logger.debug("json={}", json);
 		Gson gson = new Gson();
 
 		PoiList all = gson.fromJson(json, PoiList.class);
@@ -146,6 +148,12 @@ public class DataprovenceHelper {
 	public List<Poi> find(Collection<Filter> filters) throws IOException {
 		PoiList gl = parse(filters);
 		return Arrays.asList(gl.d);
+	}
+
+	@Override
+	public String toString() {
+		return "DataprovenceHelper [rootUrl=" + rootUrl + ", datasetName="
+				+ datasetName + ", filters=" + filters + "]";
 	}
 
 }

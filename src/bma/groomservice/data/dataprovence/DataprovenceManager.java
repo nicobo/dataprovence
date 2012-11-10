@@ -59,11 +59,11 @@ public class DataprovenceManager implements PoiListener {
 				"MonumentsEtStesCulturels" });
 	}
 
-	private TreeSet<Poi> pois;
+	private final TreeSet<Poi> pois = new TreeSet<Poi>();
 
 	private final PoiListener listener;
 
-	private int count = 0;
+	// private int count = 0;
 
 	// false -> lit les données en local (fichiers *.json)
 	// true -> lit les données depuis le net
@@ -103,12 +103,13 @@ public class DataprovenceManager implements PoiListener {
 		super();
 		this.listener = listener;
 		this.online = online;
-		this.pois = new TreeSet<Poi>();
+		// this.pois = new TreeSet<Poi>();
 	}
 
 	private Collection<DataprovenceHelper> findHelpers(Collection<String> tags) {
 		ArrayList<DataprovenceHelper> helpers = new ArrayList<DataprovenceHelper>();
 		for (String tag : tags) {
+			// logger.debug("DATASETS[{}]", tag);
 			String[] datasets = DATASETS.get(tag);
 			for (int d = 0; d < datasets.length; d++) {
 				if (online) {
@@ -124,33 +125,27 @@ public class DataprovenceManager implements PoiListener {
 
 	@Override
 	public void onPoiReceived(List<Poi> pois) {
-		synchronized (this) {
-			this.pois.addAll(pois);
-			count--;
-			// quand on a recu toutes les reponses, on notifie le listener
-			// ("externe")
-			if (count == 0) {
-				listener.onPoiReceived(new ArrayList<Poi>(this.pois));
-			}
-		}
+		logger.debug("onPoiReceived({})", pois.size());
+		// synchronized (pois) {
+		this.pois.addAll(pois);
+		// }
+		listener.onPoiReceived(new ArrayList<Poi>(pois));
 	}
 
 	public void findAll(Collection<String> tags) {
 
-		synchronized (this) {
-			count = 0;
-			pois = new TreeSet<Poi>();
-		}
+		// synchronized (pois) {
+		pois.clear();
+		// }
 
 		Set<DataprovenceHelper> helpers = new HashSet<DataprovenceHelper>();
 		helpers.addAll(findHelpers(tags));
 
 		// lance une AsyncTask pour chaque helper
 		for (DataprovenceHelper helper : findHelpers(tags)) {
-			synchronized (this) {
-				count++;
-				new LoadDataTask(this).execute(helper);
-			}
+			logger.debug("loadData(" + helper + ")");
+			new LoadDataTask(this).executeOnExecutor(
+					AsyncTask.THREAD_POOL_EXECUTOR, helper);
 		}
 	}
 
