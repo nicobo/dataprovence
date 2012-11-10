@@ -5,15 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,34 +21,6 @@ import com.google.gson.Gson;
 public class DataprovenceHelper {
 
 	Logger logger = LoggerFactory.getLogger(DataprovenceHelper.class);
-
-	//
-	// Constantes des "thèmes"
-	//
-
-	public static final String THEME_PLEINAIR = "PLEIN AIR";
-	public static final String THEME_RESTAURATION = "RESTAURATION";
-	public static final String THEME_SPORT = "SPORT";
-	public static final String THEME_CULTURE = "CULTURE";
-
-	public static final Map<String, String[]> DATASETS = new HashMap<String, String[]>();
-	static {
-		DATASETS.put(THEME_PLEINAIR, new String[] { "ServicesDeGuides",
-				"LocationDeVelo", "CentresEquestres",
-				"AccompagnateurDeMoyenneMontagneEtMoniteursDEscalade",
-				"ParcsAThemesEtAnimaliers", "GolfsEtMinigolfs",
-				"ParcsAcrobatiquesForestiers", "ParcsEtJardins",
-				"SitesNaturelsIncontournables", "Plages" });
-		DATASETS.put(THEME_RESTAURATION, new String[] {
-				"RestaurantsGastronomiques", "Restaurants" });
-		DATASETS.put(THEME_SPORT, new String[] { "SportNautique",
-				"LocationDeVelo", "CentresEquestres",
-				"AccompagnateurDeMoyenneMontagneEtMoniteursDEscalade",
-				"GolfsEtMinigolfs", "ParcsAcrobatiquesForestiers" });
-		DATASETS.put(THEME_CULTURE, new String[] { "ServicesDeGuides",
-				"SitesNaturelsIncontournables", "Musees",
-				"MonumentsEtStesCulturels" });
-	}
 
 	private final String rootUrl;
 	private final String datasetName;
@@ -180,36 +146,6 @@ public class DataprovenceHelper {
 	public List<Poi> find(Collection<Filter> filters) throws IOException {
 		PoiList gl = parse(filters);
 		return Arrays.asList(gl.d);
-	}
-
-	protected static Collection<DataprovenceHelper> findHelpers(
-			Collection<String> tags) {
-		ArrayList<DataprovenceHelper> helpers = new ArrayList<DataprovenceHelper>();
-		for (String tag : tags) {
-			String[] datasets = DATASETS.get(tag);
-			for (int d = 0; d < datasets.length; d++) {
-				helpers.add(new DataprovenceHelper(datasets[d]));
-			}
-		}
-		return helpers;
-	}
-
-	public static List<Poi> findAll(Collection<String> tags) throws IOException {
-
-		Set<DataprovenceHelper> helpers = new HashSet<DataprovenceHelper>();
-		helpers.addAll(findHelpers(tags));
-
-		TreeSet<Poi> pois = new TreeSet<Poi>();
-		for (DataprovenceHelper helper : findHelpers(tags)) {
-			pois.addAll(helper.find(null));
-		}
-
-		return new ArrayList<Poi>(pois);
-
-	}
-
-	public static List<Poi> findAll(String[] tags) throws IOException {
-		return findAll(Arrays.asList(tags));
 	}
 
 }
