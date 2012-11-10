@@ -67,11 +67,11 @@ public class DataprovenceManager implements PoiListener {
 
 	// false -> lit les données en local (fichiers *.json)
 	// true -> lit les données depuis le net
-	public static final boolean online = false;
+	public boolean online = false;
 
 	private class LoadDataTask extends
 			AsyncTask<DataprovenceHelper, Integer, Long> {
-		List<Poi> taskPois;
+		List<Poi> taskPois = new ArrayList<Poi>();
 		PoiListener listener;
 
 		public LoadDataTask(PoiListener listener) {
@@ -99,13 +99,14 @@ public class DataprovenceManager implements PoiListener {
 		}
 	}
 
-	public DataprovenceManager(PoiListener listener) {
+	public DataprovenceManager(PoiListener listener, boolean online) {
 		super();
 		this.listener = listener;
+		this.online = online;
+		this.pois = new TreeSet<Poi>();
 	}
 
-	private static Collection<DataprovenceHelper> findHelpers(
-			Collection<String> tags) {
+	private Collection<DataprovenceHelper> findHelpers(Collection<String> tags) {
 		ArrayList<DataprovenceHelper> helpers = new ArrayList<DataprovenceHelper>();
 		for (String tag : tags) {
 			String[] datasets = DATASETS.get(tag);
@@ -134,7 +135,7 @@ public class DataprovenceManager implements PoiListener {
 		}
 	}
 
-	public void findAll(Collection<String> tags) throws IOException {
+	public void findAll(Collection<String> tags) {
 
 		synchronized (this) {
 			count = 0;
@@ -153,7 +154,7 @@ public class DataprovenceManager implements PoiListener {
 		}
 	}
 
-	public void findAll(String[] tags) throws IOException {
+	public void findAll(String[] tags) {
 		findAll(Arrays.asList(tags));
 	}
 

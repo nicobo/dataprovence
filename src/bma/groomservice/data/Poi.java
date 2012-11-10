@@ -3,7 +3,7 @@ package bma.groomservice.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Poi implements Parcelable {
+public class Poi implements Parcelable, Comparable<Poi> {
 
 	/** Ex: "65c6fb5e-aa10-4711-8002-74d1ec31f9d6" */
 	public String entityid;
@@ -40,6 +40,11 @@ public class Poi implements Parcelable {
 
 	public Poi() {
 		super();
+	}
+
+	@Override
+	public int compareTo(Poi another) {
+		return entityid.compareTo(another.entityid);
 	}
 
 	public Poi(Parcel p) {
