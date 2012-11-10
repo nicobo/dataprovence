@@ -7,12 +7,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bma.groomservice.data.Filter;
 import bma.groomservice.data.Poi;
 import bma.groomservice.data.PoiList;
 
@@ -24,10 +25,10 @@ public class DataprovenceHelper {
 
 	private final String rootUrl;
 	private final String datasetName;
-	private final Map<String, Object> filters;
+	private final Collection<Filter> filters;
 
 	public DataprovenceHelper(String rootUrl, String datasetName,
-			Map<String, Object> filters) {
+			Collection<Filter> filters) {
 		this.rootUrl = rootUrl;
 		this.datasetName = datasetName;
 		this.filters = filters;
@@ -68,10 +69,10 @@ public class DataprovenceHelper {
 		return all;
 	}
 
-	protected PoiList parse(Map<String, Object> filters)
-			throws IOException, ParseException {
+	protected PoiList parse(Collection<Filter> filters) throws IOException,
+			ParseException {
 
-		Map<String, Object> ff = filters;
+		Collection<Filter> ff = filters;
 		if (ff == null) {
 			ff = this.filters;
 		}
@@ -79,10 +80,15 @@ public class DataprovenceHelper {
 		StringBuilder surl = new StringBuilder(rootUrl + "/" + datasetName
 				+ "?format=json");
 		if (ff != null) {
-			for (String filter : filters.keySet()) {
+			for (Filter filter : filters) {
 				// ex : filter = "type" -> value = "cdt:Restaurant"
-				surl.append("&$filter=eq%20'").append(filters.get(filter))
-						.append("'");
+				surl.append("&$filter=").append(filter.op).append("%20");
+				if (filter.value instanceof String) {
+					surl.append("'").append(filter.value).append("'");
+				} else {
+					surl.append(filter.value);
+				}
+
 			}
 		}
 
@@ -102,8 +108,8 @@ public class DataprovenceHelper {
 		}
 	}
 
-	public List<Poi> find(Map<String, Object> filters)
-			throws IOException, ParseException {
+	public List<Poi> find(Collection<Filter> filters) throws IOException,
+			ParseException {
 		PoiList gl = parse(filters);
 		return Arrays.asList(gl.d);
 	}

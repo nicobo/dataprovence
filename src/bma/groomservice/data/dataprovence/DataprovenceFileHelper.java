@@ -3,8 +3,9 @@ package bma.groomservice.data.dataprovence;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
-import java.util.Map;
+import java.util.Collection;
 
+import bma.groomservice.data.Filter;
 import bma.groomservice.data.PoiList;
 
 /**
@@ -28,7 +29,7 @@ public class DataprovenceFileHelper extends DataprovenceHelper {
 	}
 
 	@Override
-	protected PoiList parse(Map<String, Object> filters) throws IOException,
+	protected PoiList parse(Collection<Filter> filters) throws IOException,
 			ParseException {
 		InputStream fis = null;
 		try {

@@ -1,14 +1,15 @@
 package bma.groomservice.data.dataprovence;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.TestCase;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bma.groomservice.data.Filter;
 import bma.groomservice.data.Poi;
 
 public class DataprovenceParserTest extends TestCase {
@@ -16,8 +17,8 @@ public class DataprovenceParserTest extends TestCase {
 	Logger logger = LoggerFactory.getLogger(DataprovenceParserTest.class);
 
 	public void testRestaurantsGastronomiques() {
-		Map<String, Object> filters = new HashMap<String, Object>();
-		filters.put("type", "cdt:Restaurant");
+		Collection<Filter> filters = new ArrayList<Filter>();
+		filters.add(Filter.eq("type", "cdt:Restaurant"));
 		try {
 			// DataprovenceHelper parser = new DataprovenceHelper(
 			// "RestaurantsGastronomiques");
