@@ -1,6 +1,9 @@
 package bma.groomservice.data;
 
-public class Poi {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Poi implements Parcelable {
 
 	/** Ex: "65c6fb5e-aa10-4711-8002-74d1ec31f9d6" */
 	public String entityid;
@@ -34,6 +37,63 @@ public class Poi {
 	public String ville;
 	/** Ex: "RD7" */
 	public String voie;
+
+	public Poi() {
+		super();
+	}
+
+	public Poi(Parcel p) {
+		this();
+		entityid = p.readString();
+		raisonsociale = p.readString();
+		tlphone = p.readString();
+		adresseWeb = p.readString();
+		latitude = p.readDouble();
+		longitude = p.readDouble();
+		PartitionKey = p.readString();
+		RowKey = p.readString();
+		Timestamp = p.readString();
+		bureaudistributeur = p.readString();
+		codepostal = p.readString();
+		type = p.readString();
+		ville = p.readString();
+		voie = p.readString();
+	}
+
+	public static final Parcelable.Creator<Poi> CREATOR = new Parcelable.Creator<Poi>() {
+		@Override
+		public Poi createFromParcel(Parcel in) {
+			return new Poi(in);
+		}
+
+		@Override
+		public Poi[] newArray(int size) {
+			return new Poi[size];
+		}
+	};
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel p, int flags) {
+		p.writeString(entityid);
+		p.writeString(raisonsociale);
+		p.writeString(tlphone);
+		p.writeString(adresseWeb);
+		p.writeDouble(latitude);
+		p.writeDouble(longitude);
+		p.writeString(PartitionKey);
+		p.writeString(RowKey);
+		p.writeString(Timestamp);
+		p.writeString(bureaudistributeur);
+		p.writeString(codepostal);
+		p.writeString(type);
+		p.writeString(ville);
+		p.writeString(voie);
+	}
 
 	@Override
 	public String toString() {
