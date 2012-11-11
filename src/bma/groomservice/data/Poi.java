@@ -15,7 +15,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 	 * Ex:
 	 * "http://www.restaurantlagaliniere.fr↵http://www.hotelmercureaixsaintevictoire.fr "
 	 */
-	public String adresseWeb;
+	public String adresseweb;
 	/** Ex: "43.4896481" */
 	public double latitude;
 	/** Ex: "5.5689422" */
@@ -39,6 +39,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 	public String voie;
 
 	public String theme;
+	public boolean done;
 
 	public Poi() {
 		super();
@@ -54,7 +55,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 		entityid = p.readString();
 		raisonsociale = p.readString();
 		tlphone = p.readString();
-		adresseWeb = p.readString();
+		adresseweb = p.readString();
 		latitude = p.readDouble();
 		longitude = p.readDouble();
 		PartitionKey = p.readString();
@@ -90,7 +91,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 		p.writeString(entityid);
 		p.writeString(raisonsociale);
 		p.writeString(tlphone);
-		p.writeString(adresseWeb);
+		p.writeString(adresseweb);
 		p.writeDouble(latitude);
 		p.writeDouble(longitude);
 		p.writeString(PartitionKey);
@@ -107,7 +108,7 @@ public class Poi implements Parcelable, Comparable<Poi> {
 	@Override
 	public String toString() {
 		return "Poi [entityid=" + entityid + ", raisonsociale=" + raisonsociale
-				+ ", tlphone=" + tlphone + ", adresseWeb=" + adresseWeb
+				+ ", tlphone=" + tlphone + ", adresseWeb=" + adresseweb
 				+ ", latitude=" + latitude + ", longitude=" + longitude
 				+ ", PartitionKey=" + PartitionKey + ", RowKey=" + RowKey
 				+ ", Timestamp=" + Timestamp + ", bureaudistributeur="

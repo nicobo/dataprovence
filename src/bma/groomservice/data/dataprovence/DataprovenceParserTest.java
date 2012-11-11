@@ -23,7 +23,7 @@ public class DataprovenceParserTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		parser = new DataprovenceFileHelper(
-				"RestaurantsGastronomiques_cdtRestaurant.json");
+				"RestaurantsGastronomiques_cdtRestaurant.json", "RESTAURATION");
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import bma.groomservice.data.PoiListener;
 
 import com.google.gson.Gson;
 
-public class DataprovenceManager implements PoiListener {
+public class DataprovenceManager {
 
 	Logger logger = LoggerFactory.getLogger(DataprovenceManager.class);
 
@@ -72,14 +72,16 @@ public class DataprovenceManager implements PoiListener {
 	private class LoadDataTask extends
 			AsyncTask<DataprovenceHelper, Integer, Long> {
 		List<Poi> taskPois = new ArrayList<Poi>();
-		PoiListener listener;
+		DataprovenceManager manager;
+		DataprovenceHelper helper;
 
-		public LoadDataTask(PoiListener listener) {
-			this.listener = listener;
+		public LoadDataTask(DataprovenceManager listener) {
+			this.manager = listener;
 		}
 
 		@Override
 		protected Long doInBackground(DataprovenceHelper... dph) {
+			helper = dph[0];
 			try {
 				taskPois = dph[0].find(null);
 				return 1L;
@@ -95,14 +97,14 @@ public class DataprovenceManager implements PoiListener {
 
 		@Override
 		protected void onPostExecute(Long result) {
-			listener.onPoiReceived(taskPois);
+			manager.onPoiReceived(taskPois, helper.theme);
 		}
 	}
 
 	public DataprovenceManager(PoiListener listener, boolean online) {
 		super();
 		this.listener = listener;
-		this.online = online;
+		this.online = false;
 		// this.pois = new TreeSet<Poi>();
 	}
 
@@ -113,22 +115,22 @@ public class DataprovenceManager implements PoiListener {
 			String[] datasets = DATASETS.get(tag);
 			for (int d = 0; d < datasets.length; d++) {
 				if (online) {
-					helpers.add(new DataprovenceHelper(datasets[d]));
+					helpers.add(new DataprovenceHelper(datasets[d], tag));
 				} else {
 					helpers.add(new DataprovenceFileHelper(datasets[d]
-							+ ".json"));
+							+ ".json", tag));
 				}
 			}
 		}
 		return helpers;
 	}
 
-	@Override
-	public void onPoiReceived(List<Poi> pois) {
+	public void onPoiReceived(List<Poi> pois, String theme) {
 		logger.debug("onPoiReceived({})", pois.size());
-		// synchronized (pois) {
+		for (Poi poi : pois) {
+			poi.theme = theme;
+		}
 		this.pois.addAll(pois);
-		// }
 		listener.onPoiReceived(new ArrayList<Poi>(pois));
 	}
 

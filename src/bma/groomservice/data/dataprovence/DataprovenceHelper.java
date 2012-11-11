@@ -28,8 +28,10 @@ public class DataprovenceHelper {
 	private final String datasetName;
 	private final Collection<Filter> filters;
 
+	public String theme;
+
 	public DataprovenceHelper(String rootUrl, String datasetName,
-			Collection<Filter> filters) {
+			Collection<Filter> filters, String theme) {
 		logger.debug("new DataprovenceHelper({},{},{})", new Object[] {
 				rootUrl, datasetName, filters });
 		this.rootUrl = rootUrl;
@@ -37,13 +39,13 @@ public class DataprovenceHelper {
 		this.filters = filters;
 	}
 
-	public DataprovenceHelper(String rootUrl, String datasetName) {
-		this(rootUrl, datasetName, null);
+	public DataprovenceHelper(String rootUrl, String datasetName, String theme) {
+		this(rootUrl, datasetName, null, theme);
 	}
 
-	public DataprovenceHelper(String datasetName) {
+	public DataprovenceHelper(String datasetName, String theme) {
 		this("http://dataprovence.cloudapp.net:8080/v1/dataprovencetourisme",
-				datasetName, null);
+				datasetName, null, theme);
 	}
 
 	@Override

@@ -22,9 +22,10 @@ public class DataprovenceFileHelper extends DataprovenceHelper {
 	 *            Nom du fichier (dans le CLASSPATH) Ex:
 	 *            "RestaurantsGastronomiques_cdtRestaurant.json"
 	 */
-	public DataprovenceFileHelper(String filename) {
+	public DataprovenceFileHelper(String filename, String theme) {
 		super(null, null, null);
 		this.filename = filename;
+		this.theme = theme;
 	}
 
 	@Override
